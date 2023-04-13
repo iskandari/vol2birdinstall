@@ -54,7 +54,7 @@ fi
 sudo yum install -y patch || exit_with_error 127 "Could not install patch"
 sudo yum install -y python3 python3-devel || exit_with_error 127 "Could not install python"
 sudo yum install -y git bzip2-devel || exit_with_error 127 "Could not install dependencies"
-sudo yum install -y libconfuse-devel hdf5-devel gcc gcc-c++ wget unzip make cmake zlib zlib-devel flex file || exit_with_error 127 "Could not install dependencies"
+sudo yum install -y libcsv libconfuse-devel hdf5-devel gcc gcc-c++ wget unzip make cmake zlib zlib-devel flex file || exit_with_error 127 "Could not install dependencies"
 sudo yum install -y gsl gsl-devel || exit_with_error 127 "Could not install dependencies"
 sudo yum install -y libtirpc-devel || exit_with_error 127 "Could not install libtirpc"
 sudo yum install -y yum-utils || exit_with_error 127 "Could not install yum utils"

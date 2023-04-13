@@ -33,7 +33,7 @@ INSTALL_PREFIX=$1
 ENABLE_MISTNET=$2
 
 brew install proj
-brew install confuse hdf5@1.10 gcc wget zlib flex automake libtool cmake || exit_with_error 127 "Could not install dependencies"
+brew install libcsv confuse hdf5@1.10 gcc wget zlib flex automake libtool cmake || exit_with_error 127 "Could not install dependencies"
 brew install gsl || exit_with_error 127 "Could not install dependencies"
 if [ "$ENABLE_MISTNET" = "yes" ]; then
   brew install libtorch || exit_with_error 127 "Could not install dependencies"
