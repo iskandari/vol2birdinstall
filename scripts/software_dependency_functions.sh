@@ -37,8 +37,11 @@ IRIS2ODIM_VERSION=71db003522835d1e566c87f5c8d730f9888a52a5
 RSL_SOURCE_CODE=https://github.com/adokter/rsl.git
 RSL_VERSION=740f89e129b8e0a78eaee61f33626d3bf4b17ea5
 
-VOL2BIRD_SOURCE_CODE=https://github.com/iskandari/vol2bird.git
-VOL2BIRD_VERSION=cbdc79c
+#VOL2BIRD_SOURCE_CODE=https://github.com/iskandari/vol2bird.git
+#VOL2BIRD_VERSION=cbdc79c
+
+VOL2BIRD_SUBMODULE_PATH="vol2bird"
+VOL2BIRD_VERSION=$(git -C "$VOL2BIRD_SUBMODULE_PATH" rev-parse HEAD)
 
 CURRENT_MODULES="PROJ4 HLHDF RAVE IRIS2ODIM RSL LIBTORCH VOL2BIRD"
 
@@ -537,14 +540,14 @@ install_vol2bird()
 
   is_installed_version "$BUILD_LOG" VOL2BIRD "$VOL2BIRD_VERSION" && echo "skipping" && return 0
 
-  cd "$DOWNLOADS" || exit_with_error 127 "(LIBTORCH) Could not change to download directory $DOWNLOADS"
+  cd "$VOL2BIRD_SUBMODULE_PATH" || exit_with_error 127 "(LIBTORCH) Could not change to directory $VOL2BIRD_SUBMODULE_PATH"
   
-  NVER=`fetch_git_software VOL2BIRD "$VOL2BIRD_SOURCE_CODE" vol2bird "$VOL2BIRD_VERSION"` || exit_with_error 127 "(VOL2BIRD) Failed to update software"
+  NVER=`fetch_git_software VOL2BIRD "$VOL2BIRD_SOURCE_CODE" vol2bird "$VOL2BIRD_VERSION" --submodule` || exit_with_error 127 "(VOL2BIRD) Failed to update software"
   echo "VOL2BIRD is at version: $NVER"
 
   \rm -fr "$BUILDIR/vol2bird" || exit_with_error 127 "(VOL2BIRD) Could not remove build folder"
   
-  cp -r vol2bird "$BUILDDIR/" || exit_with_error 127 "(VOL2BIRD) Could not copy source to build dir"
+  cp -r ../vol2bird "$BUILDDIR/" || exit_with_error 127 "(VOL2BIRD) Could not copy source to build dir"
   \rm -fr "$BUILDDIR/vol2bird/.git" || exit_with_error 127 "(VOL2BIRD) Could not remove unused git info"
   
   cd "$BUILDDIR/vol2bird" || exit_with_error 127 "(VOL2BIRD) Could not change to folder $BUILDDIR/vol2bird"

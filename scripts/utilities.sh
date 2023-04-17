@@ -222,17 +222,28 @@ fetch_git_software()
   GITURI=$2
   REPODIR=$3
   VERSION=$4
-  
-  if [ ! -d "$REPODIR" ]; then
-    git clone "$GITURI" 1>&2      || exit_with_error "($MODULE) Could not fetch $GITURI from git repository"
+  FLAGS=$5
+      
+  if [[ $FLAGS == *"--submodule"* ]]; then
+
+    git submodule update 1>&2 || exit_with_error "($MODULE) Could not update submodule $REPODIR"
+
+  else
+
+    if [ ! -d "$REPODIR" ]; then
+      git clone "$GITURI" 1>&2      || exit_with_error "($MODULE) Could not fetch $GITURI from git repository"
+    fi
+    cd "$REPODIR"                                      || exit_with_error "($MODULE) Could not enter $REPODIR directory"
+    git pull "$GITURI" HEAD:master 1>&2 || exit_with_error "($MODULE) Could not update $REPODIR"
+
   fi
-  cd "$REPODIR"                                      || exit_with_error "($MODULE) Could not enter $REPODIR directory"
-  git pull "$GITURI" HEAD:master 1>&2 || exit_with_error "($MODULE) Could not update $REPODIR"
 
   if [ "$VERSION" != "" ]; then
     git checkout "$VERSION" 1>&2                     || exit_with_error "($MODULE) Could not checkout $REPODIR ($VERSION)"
   fi
+  
   CVER=`git describe`
+  
   if [ $? -eq 0 ]; then
     echo "$CVER"
   else
@@ -240,5 +251,6 @@ fetch_git_software()
   fi
   cd ..
   return 0
+
 }
 
