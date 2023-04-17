@@ -227,8 +227,9 @@ fetch_git_software()
   if [[ $FLAGS == *"--submodule"* ]]; then
 
     git submodule update --remote 1>&2 || exit_with_error "($MODULE) Could not update submodule $REPODIR"
-    git add . && git commit -m 'updated submodule' && git push -u origin main
-
+    git add "$REPODIR" && git commit -m "updated submodule $REPODIR" && git push -u origin main
+    cd "$REPODIR"
+    
   else
 
     if [ ! -d "$REPODIR" ]; then

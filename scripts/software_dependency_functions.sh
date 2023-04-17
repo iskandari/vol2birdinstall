@@ -546,8 +546,8 @@ install_vol2bird()
   echo "VOL2BIRD is at version: $NVER"
 
   \rm -fr "$BUILDIR/vol2bird" || exit_with_error 127 "(VOL2BIRD) Could not remove build folder"
-  
-  cp -r vol2bird "$BUILDDIR/" || exit_with_error 127 "(VOL2BIRD) Could not copy source to build dir"
+
+  mkdir -p "$BUILDDIR"/vol2bird && cp -r vol2bird/* "$BUILDDIR"/vol2bird/ || exit_with_error 127 "(VOL2BIRD) Could not copy source to build dir"
   \rm -fr "$BUILDDIR/vol2bird/.git" || exit_with_error 127 "(VOL2BIRD) Could not remove unused git info"
   
   cd "$BUILDDIR/vol2bird" || exit_with_error 127 "(VOL2BIRD) Could not change to folder $BUILDDIR/vol2bird"
