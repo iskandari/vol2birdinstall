@@ -1,0 +1,3 @@
+[submodule "vol2birdinstall"]
+	path = vol2birdinstall
+	url = https://github.com/iskandari/vol2birdinstall
