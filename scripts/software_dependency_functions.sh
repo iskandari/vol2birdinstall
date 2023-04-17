@@ -540,14 +540,14 @@ install_vol2bird()
 
   is_installed_version "$BUILD_LOG" VOL2BIRD "$VOL2BIRD_VERSION" && echo "skipping" && return 0
 
-  cd "$VOL2BIRD_SUBMODULE_PATH" || exit_with_error 127 "(LIBTORCH) Could not change to directory $VOL2BIRD_SUBMODULE_PATH"
+  #cd "$VOL2BIRD_SUBMODULE_PATH" || exit_with_error 127 "(LIBTORCH) Could not change to directory $VOL2BIRD_SUBMODULE_PATH"
   
   NVER=`fetch_git_software VOL2BIRD "$VOL2BIRD_SUBMODULE_PATH" vol2bird "$VOL2BIRD_VERSION" --submodule` || exit_with_error 127 "(VOL2BIRD) Failed to update software"
   echo "VOL2BIRD is at version: $NVER"
 
   \rm -fr "$BUILDIR/vol2bird" || exit_with_error 127 "(VOL2BIRD) Could not remove build folder"
   
-  cp -r ../vol2bird "$BUILDDIR/" || exit_with_error 127 "(VOL2BIRD) Could not copy source to build dir"
+  cp -r vol2bird "$BUILDDIR/" || exit_with_error 127 "(VOL2BIRD) Could not copy source to build dir"
   \rm -fr "$BUILDDIR/vol2bird/.git" || exit_with_error 127 "(VOL2BIRD) Could not remove unused git info"
   
   cd "$BUILDDIR/vol2bird" || exit_with_error 127 "(VOL2BIRD) Could not change to folder $BUILDDIR/vol2bird"
