@@ -226,6 +226,7 @@ fetch_git_software()
       
   if [[ $FLAGS == *"--submodule"* ]]; then
 
+    echo $PWD
     git submodule update --remote 1>&2 || exit_with_error "($MODULE) Could not update submodule $REPODIR"
     git add "$REPODIR" && git commit -m "updated submodule $REPODIR" && git push -u origin main
     cd "$REPODIR"
@@ -238,12 +239,13 @@ fetch_git_software()
     cd "$REPODIR"                                      || exit_with_error "($MODULE) Could not enter $REPODIR directory"
     git pull "$GITURI" HEAD:master 1>&2 || exit_with_error "($MODULE) Could not update $REPODIR"
 
+    if [ "$VERSION" != "" ]; then
+      git checkout "$VERSION" 1>&2 || exit_with_error "($MODULE) Could not checkout $REPODIR ($VERSION)"
+    fi
+
   fi
 
-  if [ "$VERSION" != "" ]; then
-    git checkout "$VERSION" 1>&2                     || exit_with_error "($MODULE) Could not checkout $REPODIR ($VERSION)"
-  fi
-  
+
   CVER=`git describe`
   
   if [ $? -eq 0 ]; then
