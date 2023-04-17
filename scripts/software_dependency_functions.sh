@@ -542,7 +542,7 @@ install_vol2bird()
 
   cd "$VOL2BIRD_SUBMODULE_PATH" || exit_with_error 127 "(LIBTORCH) Could not change to directory $VOL2BIRD_SUBMODULE_PATH"
   
-  NVER=`fetch_git_software VOL2BIRD "$VOL2BIRD_SOURCE_CODE" vol2bird "$VOL2BIRD_VERSION" --submodule` || exit_with_error 127 "(VOL2BIRD) Failed to update software"
+  NVER=`fetch_git_software VOL2BIRD "$VOL2BIRD_SUBMODULE_PATH" vol2bird "$VOL2BIRD_VERSION" --submodule` || exit_with_error 127 "(VOL2BIRD) Failed to update software"
   echo "VOL2BIRD is at version: $NVER"
 
   \rm -fr "$BUILDIR/vol2bird" || exit_with_error 127 "(VOL2BIRD) Could not remove build folder"
