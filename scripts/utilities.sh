@@ -24,11 +24,10 @@
 # @date 2021-09-26
 ###########################################################################
 
-get_os_name()
-{
+get_os_name() {
   if [ -f /etc/os-release ]; then
     . /etc/os-release
-    OS=`echo $NAME | sed -e"s/^[[:space:]]*//g" | sed -e's/[[:space:]]*$//g'`
+    OS=$(echo $NAME | sed -e"s/^[[:space:]]*//g" | sed -e's/[[:space:]]*$//g')
     if [ "$OS" = "Red Hat Enterprise Linux" ]; then
       OS=RedHat
     fi
@@ -40,7 +39,7 @@ get_os_name()
   elif [ -f /etc/debian_version ]; then
     OS=Debian
   elif [ -f /etc/redhat-release ]; then
-    OS=`cat /etc/redhat-release`
+    OS=$(cat /etc/redhat-release)
     if [ "$OS" = "Red Hat Enterprise Linux" ]; then
       OS=RedHat
     fi
@@ -50,18 +49,17 @@ get_os_name()
   echo "$OS"
 }
 
-get_os_version()
-{
+get_os_version() {
   if [ -f /etc/os-release ]; then
     . /etc/os-release
-    OS=`echo $NAME | sed -e"s/^[[:space:]]*//g" | sed -e's/[[:space:]]*$//g'`
+    OS=$(echo $NAME | sed -e"s/^[[:space:]]*//g" | sed -e's/[[:space:]]*$//g')
     if [ "$OS" = "Red Hat Enterprise Linux" ]; then
       OS=RedHat
-      VER=`echo $VERSION_ID | cut -d '.' -f1`
+      VER=$(echo $VERSION_ID | cut -d '.' -f1)
     elif [ "$OS" = "CentOS" ]; then
-      VER=`echo $VERSION_ID | cut -d '.' -f1`
+      VER=$(echo $VERSION_ID | cut -d '.' -f1)
     else
-      VER=`echo $VERSION_ID`  
+      VER=$(echo $VERSION_ID)
     fi
   elif type lsb_release >/dev/null 2>&1; then
     OS=$(lsb_release -si)
@@ -74,11 +72,11 @@ get_os_version()
     OS=Debian
     VER=$(cat /etc/debian_version)
   elif [ -f /etc/redhat-release ]; then
-    OS=`cat /etc/redhat-release`
+    OS=$(cat /etc/redhat-release)
     if [ "$OS" = "Red Hat Enterprise Linux" ]; then
       OS=RedHat
-    fi    
-    VER=`cat /etc/redhat-release | cut -d' ' -f4 | cut -d'.' -f1`
+    fi
+    VER=$(cat /etc/redhat-release | cut -d' ' -f4 | cut -d'.' -f1)
   else
     OS=$(uname -s)
     VER=$(uname -r)
@@ -86,8 +84,7 @@ get_os_version()
   echo "$OS-$VER"
 }
 
-exit_with_error()
-{
+exit_with_error() {
   echo "$2" 1>&2
   exit $1
 }
@@ -106,7 +103,7 @@ has_been_installed() {
     echo ""
     return 0
   fi
-  VAR=`cat "$1" | egrep '^'"$2"'$'`
+  VAR=$(cat "$1" | egrep '^'"$2"'$')
   if [ "$VAR" != "" ]; then
     if [ "$3" != "" ]; then
       echo "$3"
@@ -114,7 +111,7 @@ has_been_installed() {
     return 1
   fi
   echo ""
-  return 0;
+  return 0
 }
 
 # Returns the installed version.
@@ -129,17 +126,17 @@ installed_version() {
     echo ""
     return 0
   fi
-  VAR=`cat "$1" | egrep "MODULE=$2[[:space:]]+"`
+  VAR=$(cat "$1" | egrep "MODULE=$2[[:space:]]+")
   if [ "$VAR" = "" ]; then
     # Verify old info
-    VAR=`cat "$1" | egrep '^'"$2"'$'`
+    VAR=$(cat "$1" | egrep '^'"$2"'$')
     if [ "$VAR" != "" ]; then
       echo ""
       return 1
     fi
     return 0
   fi
-  VER=`echo $VAR | sed -e"s/\(.*\)\(VERSION=\)\([^$]*\)/\3/g"`
+  VER=$(echo $VAR | sed -e"s/\(.*\)\(VERSION=\)\([^$]*\)/\3/g")
   echo "$VER"
   return 1
 }
@@ -153,7 +150,7 @@ installed_version() {
 #   0  : If it is installed
 #   1  : Otherwise
 is_installed_version() {
-  VER=`installed_version "$1" "$2"`
+  VER=$(installed_version "$1" "$2")
   RES=$?
   #echo "RES: $RES VER=$VER, EXP=$3" 1>&2
   if [ $RES -eq 1 -a "$VER" = "$3" ]; then
@@ -171,7 +168,7 @@ remove_installed() {
   if [ ! -f "$1" ]; then
     return
   fi
-  cat "$1" | egrep -v '^'"$2"'$' | egrep -v "^MODULE=$2[[:space:]]+" > "$1.new"
+  cat "$1" | egrep -v '^'"$2"'$' | egrep -v "^MODULE=$2[[:space:]]+" >"$1.new"
   \mv "$1.new" "$1"
 }
 
@@ -186,7 +183,7 @@ add_installed_version() {
     touch "$1"
   fi
   remove_installed "$1" "$2"
-  echo "MODULE=$2	VERSION=$3" >> "$1"
+  echo "MODULE=$2	VERSION=$3" >>"$1"
 }
 
 # Adds the arg string to a file
@@ -198,7 +195,7 @@ add_installed() {
   if [ ! -f "$1" ]; then
     touch "$1"
   fi
-  echo $2 >> "$1"
+  echo $2 >>"$1"
 }
 
 # Fetches the specific project from the gitrepository
@@ -216,14 +213,13 @@ add_installed() {
 # Exits:
 #   On any type of error except if it not is possible to describe the project
 #
-fetch_git_software() 
-{
+fetch_git_software() {
   MODULE=$1
   GITURI=$2
   REPODIR=$3
   VERSION=$4
   FLAGS=$5
-      
+
   if [[ $FLAGS == *"--submodule"* ]]; then
 
     git submodule update 1>&2 || exit_with_error "($MODULE) Could not update submodule $REPODIR"
@@ -231,19 +227,19 @@ fetch_git_software()
   else
 
     if [ ! -d "$REPODIR" ]; then
-      git clone "$GITURI" 1>&2      || exit_with_error "($MODULE) Could not fetch $GITURI from git repository"
+      git clone "$GITURI" 1>&2 || exit_with_error "($MODULE) Could not fetch $GITURI from git repository"
     fi
-    cd "$REPODIR"                                      || exit_with_error "($MODULE) Could not enter $REPODIR directory"
+    cd "$REPODIR" || exit_with_error "($MODULE) Could not enter $REPODIR directory"
     git pull "$GITURI" HEAD:master 1>&2 || exit_with_error "($MODULE) Could not update $REPODIR"
 
   fi
 
   if [ "$VERSION" != "" ]; then
-    git checkout "$VERSION" 1>&2                     || exit_with_error "($MODULE) Could not checkout $REPODIR ($VERSION)"
+    git checkout "$VERSION" 1>&2 || exit_with_error "($MODULE) Could not checkout $REPODIR ($VERSION)"
   fi
-  
-  CVER=`git describe`
-  
+
+  CVER=$(git describe)
+
   if [ $? -eq 0 ]; then
     echo "$CVER"
   else
@@ -253,4 +249,3 @@ fetch_git_software()
   return 0
 
 }
-
