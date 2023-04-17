@@ -226,7 +226,7 @@ fetch_git_software()
       
   if [[ $FLAGS == *"--submodule"* ]]; then
 
-    git submodule update 1>&2 || exit_with_error "($MODULE) Could not update submodule $REPODIR"
+    git submodule update --remote 1>&2 || exit_with_error "($MODULE) Could not update submodule $REPODIR"
 
   else
 
